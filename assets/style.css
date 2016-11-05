@@ -1,0 +1,46 @@
+body {
+  font-family: 'Book Antiqua', Arial,sans-serif;
+  color: #222;
+  text-align: center;
+  background: #d3d3d3;
+}
+h1 {
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+a {
+  text-decoration: none;
+  color: #444;
+ }
+
+p {
+  font-size: 18px;
+  color: #222;
+  margin-bottom: 10px;
+}
+
+#description, #temperature {
+  font-size: 18px;
+}
+
+span {
+  color: blue;
+  font-size: 24px;
+  font-weight: 600;
+}
+.unit-controls {
+  margin: 50px 0 0 0;
+}
+
+.unit-controls img {
+  margin: 10px 5px;
+  width: 45px;
+ }
+
+.change-unit {
+  opacity: 0.6;
+}
+
+.change-unit.active {
+opacity: 1;
+}
