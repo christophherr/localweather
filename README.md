@@ -1,6 +1,7 @@
 # localweather
-Local Weather App for Free Code Camp's Front End Certification
+Local Weather App inspired by freeCodeCamp's Front-End Certification
 
-Uses api.openweathermap.org
+Uses apixu.com, ipinfo.io, and Axios.
+You will need your own apixu API Key.
 
-Functional CodePen: http://codepen.io/c-herr/full/EKJBaw
+Demo on Glitch: https://fabulous-tendency.glitch.me/

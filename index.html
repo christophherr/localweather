@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 <html lang="en-us">
+
 <head>
-<meta charset="utf-8">
-<title>Freecodecamp Local Weather App</title>
-<link href="/assets/style.css" rel="stylesheet" type="text/css" />
+    <meta charset="utf-8">
+    <title>Freecodecamp Local Weather App</title>
+    <link href="/assets/style.css" rel="stylesheet" type="text/css" />
 </head>
+
 <body>
-<h1>Freecodecamp Show the Local Weather</h1>
-<div id="temperature">The temperature in <span class="location"></span> is <span class="temperature">...</span>.</div>
-<img class="weather"/>
-<div id="description">The weather condition is described as <span class="description">...</span>.</div>
-<div class="unit-controls">
-<p>The temperatures are shown in the so called metric system (in Celsius).<br /> If you want to show the temperature in the imperial system (in Fahrenheit), you can change the setting below.</p><a href="#" data-unit="imperial" class="change-unit"> <img src="http://www.charbase.com/images/glyph/8457" /></a><a href="#" data-unit="metric" class="change-unit active"><img src="http://www.charbase.com/images/glyph/8451" /></a>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="/assets/app.js"></script>
+    <h1>Show the Local Weather</h1>
+
+    <div id="temperature">The temperature in <span id="location" class="location"></span> is <span id="weather-temperature" class="temperature">...</span>.</div>
+    <img id="weather" class="weather" />
+    <div id="description">The weather condition is described as <span id="weather-condition" class="description">...</span>.</div>
+
+    <div class="unit-controls">
+        <p>Temperatures are shown in the so called <span id="unit"> metric system (in Celsius)</span>.<br> You can switch to
+            the <span id="opposite">imperial system (in Fahrenheit)</span> <br> by clicking the <span id="symbol">°F</span>            symbol below.</p>
+        <p id="change-unit">
+            <a href="#" data-unit="imperial" class="change-unit">&#x2109</a>
+            <a href="#" data-unit="metric" class="change-unit active">&#x2103</a>
+        </p>
+    </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/assets/app.js"></script>
 </body>
+
 </html>

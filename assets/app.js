@@ -1,48 +1,77 @@
-// Uses api.openweathermap.org
+/* global axios */
 
-jQuery(document).ready(function($) {
-  // Get user location. Use metric system as default.
-  getUserLocation("metric");
-  function getUserLocation(unit) {
-    $.get("http://ipinfo.io", function(location) {
-      var loc = (location.city + "; " + location.country);
-      getWeather(unit,loc);
-      //display location name
-      $(".location").html(location.city);
-    }, "jsonp");
-  }
+var outputTemp = document.getElementById('weather-temperature'),
+    outputWeather = document.getElementById('weather'),
+    outputWeatherCondition = document.getElementById('weather-condition'),
+    outputLocation = document.getElementById('location'),
+    outputUnit = document.getElementById('unit'),
+    outputOpposite = document.getElementById('opposite'),
+    outputSymbol = document.getElementById('symbol'),
+    changeUnit = document.getElementById('change-unit'),
+    changeUnitClass = document.getElementsByClassName('change-unit'),
+    target,
+    unit,
+    apiUrl =
+        'https://api.apixu.com/v1/current.json?key=' +
+        ' Add Your Own API Key here ' +
+        '&q=',
+    unitTemp = '',
+    tempUnit = '',
+    getUserLocation,
+    getWeather,
+    whatsTheWeather;
 
-  // Change unit system metric/imperial
-    $(".change-unit").click(function(){
-    // reset both buttons
-    $(".change-unit").removeClass("active");
-    // make selected button look active
-    $(this).addClass("active");
-    // store unit
-    var unit = $(".active").data("unit");
-    // change unit in toggle intro sentence
-    unit == "metric" ? $("#unit").html("a metric system") : $("#unit").html("an imperial system");
-    // get location with new unit
-    getUserLocation(unit);
-  });
+getUserLocation = function(unit) {
+    axios.get('https://ipinfo.io').then(function(location) {
+        var loc = location.data.ip;
+        getWeather(unit, loc);
 
-  // Get weather and display information
-  function getWeather(unit,loc) {
-    var whatsTheWeather = "http://api.openweathermap.org/data/2.5/weather?q="+loc+"&units="+unit +  "&appid=64989c25e65964e904e335fd30b5a55a";
+        outputLocation.innerHTML = location.data.city;
+    }, 'jsonp');
+};
+getUserLocation('metric');
 
-    $.getJSON(whatsTheWeather, function(weather) {
-      //define unit labels
-      var unitTemp = "";
-      unit === "metric" ? unitTemp = "°C" : unitTemp = "F";
-      //get temp
-      $(".temperature").html((weather.main.temp).toFixed(1)+" "+unitTemp);
-      //get icon
-      $(".weather").attr("src","http://openweathermap.org/img/w/" + weather.weather[0].icon + ".png");
-      //get weather description
+getWeather = function(unit, loc) {
+    whatsTheWeather = apiUrl + loc;
 
-      $('.location').append(location.city);
-      $(".description").html(weather.weather[0].description);
+    axios.get(whatsTheWeather).then(function(weather) {
+        if (unit !== 'metric') {
+            unitTemp = 'F';
+            tempUnit = weather.data.current.feelslike_f;
+        } else {
+            unitTemp = '°C';
+            tempUnit = weather.data.current.feelslike_c;
+        }
 
+        outputTemp.innerHTML = tempUnit + ' ' + unitTemp;
+        outputWeather.setAttribute('src', weather.data.current.condition.icon);
+        outputWeatherCondition.innerHTML = weather.data.current.condition.text;
     });
-  }
+};
+
+changeUnit.addEventListener('click', function(event) {
+    event.preventDefault();
+
+    target = event.target;
+
+    changeUnitClass = [...changeUnitClass];
+    changeUnitClass.forEach(function(item) {
+        item.classList.remove('active');
+    });
+
+    target.classList.add('active');
+
+    unit = target.dataset.unit;
+
+    if (unit !== 'metric') {
+        outputUnit.innerHTML = 'imperial system (in Fahrenheit)';
+        outputOpposite.innerHTML = 'metric system (Celsius)';
+        outputSymbol.innerHTML = '°C';
+    } else {
+        outputUnit.innerHTML = 'metric system (in Celsius)';
+        outputOpposite.innerHTML = 'imperial system (Fahrenheit)';
+        outputSymbol.innerHTML = '°F';
+    }
+
+    getUserLocation(unit);
 });
