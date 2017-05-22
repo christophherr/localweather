@@ -1,48 +1,59 @@
-// Uses api.openweathermap.org
+// uses https://www.apixu.com/ and https://ipinfo.io
 
 jQuery(document).ready(function($) {
-  // Get user location. Use metric system as default.
-  getUserLocation("metric");
-  function getUserLocation(unit) {
-    $.get("http://ipinfo.io", function(location) {
-      var loc = (location.city + "; " + location.country);
-      getWeather(unit,loc);
-      //display location name
-      $(".location").html(location.city);
-    }, "jsonp");
-  }
+    var getUserLocation = function(unit) {
+        $.get(
+            'https://ipinfo.io',
+            function(location) {
+                var loc = location.ip;
+                getWeather(unit, loc);
 
-  // Change unit system metric/imperial
-    $(".change-unit").click(function(){
-    // reset both buttons
-    $(".change-unit").removeClass("active");
-    // make selected button look active
-    $(this).addClass("active");
-    // store unit
-    var unit = $(".active").data("unit");
-    // change unit in toggle intro sentence
-    unit == "metric" ? $("#unit").html("a metric system") : $("#unit").html("an imperial system");
-    // get location with new unit
-    getUserLocation(unit);
-  });
+                $('.location').html(location.city);
+            },
+            'jsonp'
+        );
+    };
+    getUserLocation('metric');
 
-  // Get weather and display information
-  function getWeather(unit,loc) {
-    var whatsTheWeather = "http://api.openweathermap.org/data/2.5/weather?q="+loc+"&units="+unit +  "&appid=64989c25e65964e904e335fd30b5a55a";
+    var getWeather = function(unit, loc) {
+        var whatsTheWeather =
+            'https://api.apixu.com/v1/current.json?key=9a5fe910c4104e7eb2d11925172205&q=' +
+            loc;
 
-    $.getJSON(whatsTheWeather, function(weather) {
-      //define unit labels
-      var unitTemp = "";
-      unit === "metric" ? unitTemp = "°C" : unitTemp = "F";
-      //get temp
-      $(".temperature").html((weather.main.temp).toFixed(1)+" "+unitTemp);
-      //get icon
-      $(".weather").attr("src","http://openweathermap.org/img/w/" + weather.weather[0].icon + ".png");
-      //get weather description
+        $.getJSON(whatsTheWeather, function(weather) {
+            var unitTemp = '', tempUnit = '';
 
-      $('.location').append(location.city);
-      $(".description").html(weather.weather[0].description);
+            if (unit !== 'metric') {
+                unitTemp = 'F';
+                tempUnit = weather.current.feelslike_f;
+            } else {
+                unitTemp = '°C';
+                tempUnit = weather.current.feelslike_c;
+            }
 
+            $('.temperature').html(tempUnit + ' ' + unitTemp);
+            $('.weather').attr('src', weather.current.condition.icon);
+            $('.description').html(weather.current.condition.text);
+        });
+    };
+
+    // Change unit system metric/imperial
+    $('.change-unit').click(function() {
+        $('.change-unit').removeClass('active');
+        $(this).addClass('active');
+
+        var unit = $('.active').data('unit');
+
+        if (unit !== 'metric') {
+            $('#unit').html(' imperial system (in Fahrenheit)');
+            $('#opposite').html('metric system (Celsius)');
+            $('#symbol').html('°C');
+        } else {
+            $('#unit').html('metric system (in Celsius)');
+            $('#opposite').html('imperial system (Fahrenheit)');
+            $('#symbol').html('°F');
+        }
+
+        getUserLocation(unit);
     });
-  }
 });
