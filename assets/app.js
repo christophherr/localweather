@@ -17,7 +17,9 @@ jQuery(document).ready(function($) {
 
     var getWeather = function(unit, loc) {
         var whatsTheWeather =
-            'https://api.apixu.com/v1/current.json?key=9a5fe910c4104e7eb2d11925172205&q=' +
+            'https://api.apixu.com/v1/current.json?key=' +
+            'Add Your API Key Here' +
+            '&q=' +
             loc;
 
         $.getJSON(whatsTheWeather, function(weather) {
