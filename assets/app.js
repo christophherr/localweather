@@ -9,21 +9,23 @@ var outputTemp = document.getElementById('weather-temperature'),
     outputSymbol = document.getElementById('symbol'),
     changeUnit = document.getElementById('change-unit'),
     changeUnitClass = document.getElementsByClassName('change-unit'),
+    loc,
     target,
     unit,
     apiUrl =
-        'https://api.apixu.com/v1/current.json?key=' +
-        ' Add Your Own API Key here ' +
-        '&q=',
+        'https://api.apixu.com/v1/current.json?key=9a5fe910c4104e7eb2d11925172205&q=',
     unitTemp = '',
     tempUnit = '',
+    fahrenheitTemp,
+    celsiusTemp,
     getUserLocation,
     getWeather,
+    changeTemperatureUnit,
     whatsTheWeather;
 
 getUserLocation = function(unit) {
     axios.get('https://ipinfo.io').then(function(location) {
-        var loc = location.data.ip;
+        loc = location.data.ip;
         getWeather(unit, loc);
 
         outputLocation.innerHTML = location.data.city;
@@ -42,36 +44,41 @@ getWeather = function(unit, loc) {
             unitTemp = '°C';
             tempUnit = weather.data.current.feelslike_c;
         }
-
         outputTemp.innerHTML = tempUnit + ' ' + unitTemp;
         outputWeather.setAttribute('src', weather.data.current.condition.icon);
         outputWeatherCondition.innerHTML = weather.data.current.condition.text;
+        changeTemperatureUnit(weather);
     });
 };
 
-changeUnit.addEventListener('click', function(event) {
-    event.preventDefault();
+changeTemperatureUnit = function(weather) {
+    fahrenheitTemp = weather.data.current.feelslike_f;
+    celsiusTemp = weather.data.current.feelslike_c;
 
-    target = event.target;
+    changeUnit.addEventListener('click', function(event) {
+        event.preventDefault();
 
-    changeUnitClass = [...changeUnitClass];
-    changeUnitClass.forEach(function(item) {
-        item.classList.remove('active');
+        target = event.target;
+
+        changeUnitClass = [...changeUnitClass];
+        changeUnitClass.forEach(function(item) {
+            item.classList.remove('active');
+        });
+
+        target.classList.add('active');
+
+        unit = target.dataset.unit;
+
+        if (unit !== 'metric') {
+            outputUnit.innerHTML = 'imperial system (in Fahrenheit)';
+            outputOpposite.innerHTML = 'metric system (Celsius)';
+            outputSymbol.innerHTML = '°C';
+            outputTemp.innerHTML = fahrenheitTemp + ' °F';
+        } else {
+            outputUnit.innerHTML = 'metric system (in Celsius)';
+            outputOpposite.innerHTML = 'imperial system (Fahrenheit)';
+            outputSymbol.innerHTML = '°F';
+            outputTemp.innerHTML = celsiusTemp + ' °C';
+        }
     });
-
-    target.classList.add('active');
-
-    unit = target.dataset.unit;
-
-    if (unit !== 'metric') {
-        outputUnit.innerHTML = 'imperial system (in Fahrenheit)';
-        outputOpposite.innerHTML = 'metric system (Celsius)';
-        outputSymbol.innerHTML = '°C';
-    } else {
-        outputUnit.innerHTML = 'metric system (in Celsius)';
-        outputOpposite.innerHTML = 'imperial system (Fahrenheit)';
-        outputSymbol.innerHTML = '°F';
-    }
-
-    getUserLocation(unit);
-});
+};
