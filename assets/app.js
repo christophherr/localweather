@@ -36,7 +36,7 @@ getWeather = function(unit, loc) {
 
     axios.get(whatsTheWeather).then(function(weather) {
         if (unit !== 'metric') {
-            unitTemp = 'F';
+            unitTemp = '°F';
             tempUnit = weather.data.current.feelslike_f;
         } else {
             unitTemp = '°C';
